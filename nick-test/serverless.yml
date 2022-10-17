@@ -1,0 +1,63 @@
+service: nick-test
+frameworkVersion: '3'
+
+custom:
+  environment: ${file(./env.yml):${self:provider.stage}, file(./env.yml):default}
+  serverless-offline:
+    httpPort: 3000
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  environment:
+    NODE_ENV: ${self:custom.environment.NODE_ENV}
+    DB_NAME: ${self:custom.environment.DB_NAME}
+    DB_USER: ${self:custom.environment.DB_USER}
+    DB_PASSWORD: ${self:custom.environment.DB_PASSWORD}
+    DB_HOST: ${self:custom.environment.DB_HOST}
+    DB_PORT: ${self:custom.environment.DB_PORT}
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+functions:
+  nick:
+    name: ${self:custom.environment.NICK_NAME}
+    handler: handler.nick
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  createUser:
+    name: create-user
+    handler: user/user-controller.createUser
+    events:
+      - httpApi: 'POST /users/create'
+
+  getUsers:
+    name: get-users
+    handler: user/user-controller.getsUser
+    events:
+      - httpApi: 'GET /users'
+
+  getOneUser:
+    name: get-one-user
+    handler: user/user-controller.getUserById
+    events:
+      - httpApi: 'GET /users/{id}'
+
+  updateUser:
+    name: update-user
+    handler: user/user-controller.updateUser
+    events:
+      - httpApi: 'PATCH /users/{id}'
+
+  deleteUser:
+    name: delete-user
+    handler: user/user-controller.deleteUserById
+    events:
+      - httpApi: 'DELETE /users/{id}'
