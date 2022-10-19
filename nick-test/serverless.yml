@@ -22,16 +22,9 @@ useDotenv: true
 
 plugins:
   - serverless-offline
+  - serverless-esbuild
 
 functions:
-  nick:
-    name: ${self:custom.environment.NICK_NAME}
-    handler: handler.nick
-    events:
-      - httpApi:
-          path: /
-          method: get
-
   createUser:
     name: create-user
     handler: user/user-controller.createUser
@@ -40,7 +33,7 @@ functions:
 
   getUsers:
     name: get-users
-    handler: user/user-controller.getsUser
+    handler: user/user-controller.getUsers
     events:
       - httpApi: 'GET /users'
 
