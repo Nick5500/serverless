@@ -36,8 +36,8 @@ class Result {
 }
 
 export class MessageUtil {
-    static success(data: object): any {
-        const result = new Result(StatusCode.success, 0, 'success', data);
+    static success(data: object, statusCode: number = StatusCode.success): any {
+        const result = new Result(statusCode, 0, 'success', data);
 
         return result.bodyToString();
     }

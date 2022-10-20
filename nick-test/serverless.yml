@@ -5,10 +5,10 @@ custom:
   environment: ${file(./env.yml):${self:provider.stage}, file(./env.yml):default}
   serverless-offline:
     httpPort: 3000
-
   esbuild:
     external:
       - 'pg'
+
 
 provider:
   name: aws
@@ -30,31 +30,26 @@ plugins:
 
 functions:
   createUser:
-    name: create-user
     handler: user/user-controller.createUser
     events:
       - httpApi: 'POST /users/create'
 
   getUsers:
-    name: get-users
     handler: user/user-controller.getUsers
     events:
       - httpApi: 'GET /users'
 
   getOneUser:
-    name: get-one-user
     handler: user/user-controller.getUserById
     events:
       - httpApi: 'GET /users/{id}'
 
   updateUser:
-    name: update-user
     handler: user/user-controller.updateUser
     events:
       - httpApi: 'PATCH /users/{id}'
 
   deleteUser:
-    name: delete-user
     handler: user/user-controller.deleteUserById
     events:
       - httpApi: 'DELETE /users/{id}'

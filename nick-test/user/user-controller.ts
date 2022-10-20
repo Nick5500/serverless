@@ -1,9 +1,9 @@
 "use strict";
 import { loadSequelize } from "../sequelize";
 import { getOneUserById, create, getAllUsers, updateUserById, deleteOneById } from './user-service';
-import { User } from "../models/user.model";
-import { MessageUtil } from "../error/message";
-import { ErrorMessages } from "../constants/error-messages";
+import { User } from "../common/models/user.model";
+import { MessageUtil } from "../common/error/message";
+import { StatusCodes } from "../common/constants/status-code";
 
 export async function createUser(event): Promise<User> {
   await loadSequelize();
@@ -18,10 +18,17 @@ export async function createUser(event): Promise<User> {
   return create(userToCreate);
 }
 
-export async function getUserById(event: any): Promise<User> {
+export async function getUserById(event: any): Promise<User | MessageUtil> {
+  const id = Number(event.pathParameters?.id);
+
+  if (isNaN(id)) {
+    return MessageUtil.error(StatusCodes.BAD_REQUEST, 'Wrong id')
+  }
+
+
   await loadSequelize();
 
-  return getOneUserById(event.pathParameters?.id);
+  return getOneUserById(id);
 }
 
 export async function getUsers(): Promise<User[]> {
@@ -29,25 +36,21 @@ export async function getUsers(): Promise<User[]> {
   return getAllUsers();
 }
 
-export async function updateUser(event: any): Promise<User> {
+export async function updateUser(event: any): Promise<User | MessageUtil> {
+  const id = Number(event.pathParameters?.id);
+
+  if (isNaN(id)) {
+    return MessageUtil.error(StatusCodes.BAD_REQUEST, 'Wrong id')
+  }
+
   await loadSequelize();
 
   const body = JSON.parse(event.body);
-  return updateUserById(event.pathParameters.id, body);
+  return updateUserById(id, body);
 }
 
-export async function deleteUserById(event: any): Promise<string> {
+export async function deleteUserById(event: any): Promise<any> {
   await loadSequelize();
 
-  const isUserDeleted = await deleteOneById(event.pathParameters.id);
-
-  if (!isUserDeleted) {
-    return MessageUtil.success({
-      message: ErrorMessages.USER_NOT_DELETED
-    });
-  }
-
-  return MessageUtil.success({
-    message: ErrorMessages.USER_DELETED,
-  });
+  return deleteOneById(event.pathParameters.id);
 }

@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { User } from "./models/user.model";
+import { User } from "./common/models/user.model";
 import { Sequelize } from "sequelize-typescript";
 
 export function loadSequelize() {
