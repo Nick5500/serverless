@@ -2,12 +2,14 @@
 
 import { User } from "../models/user.model";
 import { MessageUtil } from "../error/message";
+import { StatusCodes } from "../constants/status-code";
+import { ErrorMessages } from "../constants/error-messages";
 
 export async function getOneUserById(id: string): Promise<any> {
   const user = await User.findOne({ where: { id } });
 
   if (!user) {
-    return MessageUtil.error(404, 'User is not found');
+    return MessageUtil.error(StatusCodes.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
   }
 
   return MessageUtil.success(user);
@@ -30,7 +32,7 @@ export async function updateUserById(id: string, body: any): Promise<any> {
   const updatedUser = await User.findOne({ where: { id } });
 
   if (!updatedUser) {
-    return MessageUtil.error(404, 'User is not found');
+    return MessageUtil.error(StatusCodes.NOT_FOUND, ErrorMessages.USER_NOT_FOUND);
   }
 
   return MessageUtil.success(updatedUser);

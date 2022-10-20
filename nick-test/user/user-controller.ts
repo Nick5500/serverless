@@ -2,6 +2,8 @@
 import { loadSequelize } from "../sequelize";
 import { getOneUserById, create, getAllUsers, updateUserById, deleteOneById } from './user-service';
 import { User } from "../models/user.model";
+import { MessageUtil } from "../error/message";
+import { ErrorMessages } from "../constants/error-messages";
 
 export async function createUser(event): Promise<User> {
   await loadSequelize();
@@ -40,8 +42,12 @@ export async function deleteUserById(event: any): Promise<string> {
   const isUserDeleted = await deleteOneById(event.pathParameters.id);
 
   if (!isUserDeleted) {
-    return JSON.stringify('User was not deleted');
+    return MessageUtil.success({
+      message: ErrorMessages.USER_NOT_DELETED
+    });
   }
 
-  return JSON.stringify('User was deleted');
+  return MessageUtil.success({
+    message: ErrorMessages.USER_DELETED,
+  });
 }

@@ -1,3 +1,4 @@
+import pg from 'pg';
 import { User } from "./models/user.model";
 import { Sequelize } from "sequelize-typescript";
 
@@ -8,6 +9,7 @@ export function loadSequelize() {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     dialect: 'postgres',
+    dialectModule: pg,
     schema: 'public',
     models: [User],
     logging: false,

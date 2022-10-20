@@ -6,10 +6,14 @@ custom:
   serverless-offline:
     httpPort: 3000
 
+  esbuild:
+    external:
+      - 'pg'
+
 provider:
   name: aws
   runtime: nodejs16.x
-  stage: dev
+  stage: prod
   environment:
     NODE_ENV: ${self:custom.environment.NODE_ENV}
     DB_NAME: ${self:custom.environment.DB_NAME}

@@ -55640,6 +55640,9 @@ __export(user_controller_exports, {
 });
 module.exports = __toCommonJS(user_controller_exports);
 
+// sequelize.ts
+var import_pg = __toESM(require("pg"));
+
 // models/user.model.ts
 var import_sequelize_typescript = __toESM(require_dist2());
 var User = class extends import_sequelize_typescript.Model {
@@ -55663,6 +55666,7 @@ function loadSequelize() {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     dialect: "postgres",
+    dialectModule: import_pg.default,
     schema: "public",
     models: [User],
     logging: false
@@ -55713,7 +55717,7 @@ var MessageUtil = class {
 async function getOneUserById(id) {
   const user = await User.findOne({ where: { id } });
   if (!user) {
-    return MessageUtil.error(404, "User is not found");
+    return MessageUtil.error(404 /* NOT_FOUND */, "User is not found" /* USER_NOT_FOUND */);
   }
   return MessageUtil.success(user);
 }
@@ -55729,7 +55733,7 @@ async function updateUserById(id, body) {
   await User.update(body, { where: { id } });
   const updatedUser = await User.findOne({ where: { id } });
   if (!updatedUser) {
-    return MessageUtil.error(404, "User is not found");
+    return MessageUtil.error(404 /* NOT_FOUND */, "User is not found" /* USER_NOT_FOUND */);
   }
   return MessageUtil.success(updatedUser);
 }
@@ -55766,9 +55770,13 @@ async function deleteUserById(event) {
   await loadSequelize();
   const isUserDeleted = await deleteOneById(event.pathParameters.id);
   if (!isUserDeleted) {
-    return JSON.stringify("User was not deleted");
+    return MessageUtil.success({
+      message: "User was not deleted" /* USER_NOT_DELETED */
+    });
   }
-  return JSON.stringify("User was deleted");
+  return MessageUtil.success({
+    message: "User was deleted" /* USER_DELETED */
+  });
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
